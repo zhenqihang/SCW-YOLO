@@ -31,7 +31,7 @@ class WIoU_Scale:
                 return beta / alpha
         return 1
 
-def bbox_iou(box1, box2, xywh=True, WIoU=False gamma=0.5, scale=False, eps=1e-7):
+def bbox_iou(box1, box2, xywh=True, WIoU=False, gamma=0.5, scale=False, eps=1e-7):
     # Returns Intersection over Union (IoU) of box1(1,4) to box2(n,4)
 
     # Get the coordinates of bounding boxes
@@ -64,11 +64,11 @@ def bbox_iou(box1, box2, xywh=True, WIoU=False gamma=0.5, scale=False, eps=1e-7)
         c2 = (cw ** 2 + ch ** 2) ** alpha + eps  # convex diagonal squared
         rho2 = (((b2_x1 + b2_x2 - b1_x1 - b1_x2) ** 2 + (
                 b2_y1 + b2_y2 - b1_y1 - b1_y2) ** 2) / 4) ** alpha  # center dist ** 2
-            if scale:
-                return getattr(WIoU_Scale, '_scaled_loss')(self), (1 - iou) * torch.exp(
-                    (rho2 / c2)), iou  # WIoU https://arxiv.org/abs/2301.10051
-            else:
-                return iou, torch.exp((rho2 / c2))  # WIoU v1
+        if scale:
+            return getattr(WIoU_Scale, '_scaled_loss')(self), (1 - iou) * torch.exp(
+                (rho2 / c2)), iou  # WIoU https://arxiv.org/abs/2301.10051
+        else:
+            return iou, torch.exp((rho2 / c2))  # WIoU v1
        
     else:
       return iou  # IoU
